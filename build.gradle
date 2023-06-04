@@ -1,0 +1,118 @@
+plugins {
+    id 'java-library'
+    id 'checkstyle'
+    id 'com.github.spotbugs' version '5.0.14'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
+
+// current version of the project
+version '0.0.0'
+group 'org.venatorlabs.rodeo'
+
+ext {
+    // Global project variables accessible from project.<VARIABLENAME>
+    checkstyleVersion = '10.7.0'
+    checkstyleCfgProjectPath = 'config/checkstyle/checkstyle.xml'
+    spotbugsExcludeCfgProjectPath = 'config/spotbugs/excludeFilter.xml'
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    compileClasspath.extendsFrom(annotationProcessor)
+}
+
+dependencies {
+    annotationProcessor 'com.github.spotbugs:spotbugs-annotations:4.7.3'
+
+    if (project.hasProperty("rodeoBuild")) {
+        api project(':core:types-lib')
+    } else {
+        api 'org.venatorlabs.rodeo.rodeo-types:1.0.0'
+    }
+}
+
+checkstyle {
+    println "configuring $project.archivesBaseName checkstyle@$project.checkstyleVersion"
+    toolVersion project.checkstyleVersion
+    // get back to project root & then to central configuration
+    configFile file("../../$project.checkstyleCfgProjectPath")
+}
+
+checkstyleMain {
+    doFirst {
+        println "performing checkstyle on main directory in $project.archivesBaseName"
+        source = 'src/main/java/org'
+    }
+}
+
+compileJava {
+    doFirst {
+        println "compiling $project.archivesBaseName"
+    }
+    sourceCompatibility '11'
+    targetCompatibility '11'
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+sourcesJar {
+    doFirst {
+        println "creating ${sourcesJar.archiveFile.getAsFile().get().getName()}"
+    }
+    doLast {
+        println "created sources @ ${sourcesJar.archiveFile.getAsFile().get()}"
+    }
+}
+
+javadocJar {
+    doFirst {
+        println "creating ${javadocJar.archiveFile.getAsFile().get().getName()}"
+    }
+    doLast {
+        println "created javadoc @ ${javadocJar.archiveFile.getAsFile().get()}"
+    }
+}
+
+jar {
+    ext {
+        if (project.hasProperty("rodeoBuild")) {
+            libName = "plugin-lib"
+        } else {
+            libName = rootProject.name
+        }
+        projPath = "${project.group}.plugin".replaceAll("\\.", "/")
+    }
+    archivesBaseName = "$libName"
+    archiveClassifier = null
+    metaInf {
+        into (projPath) {
+            if (project.hasProperty("rodeoBuild")) {
+                from project.file("LICENSE")
+            } else {
+                from rootProject.file("LICENSE")
+            }
+        }
+    }
+    doFirst {
+        println "creating ${jar.archiveFile.getAsFile().get().getName()}"
+    }
+    doLast {
+        println "created library @ ${jar.archiveFile.getAsFile().get()}"
+    }
+}
+
+spotbugs {
+    excludeFilter = file(project.spotbugsExcludeCfgProjectPath)
+}
+
+spotbugsMain {
+    doFirst {
+        println "verifying code with spotbugs"
+    }
+}
