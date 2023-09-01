@@ -7,7 +7,7 @@
 
 package org.venatorlabs.rodeo.plugin;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.venatorlabs.rodeo.types.INode;
 import org.venatorlabs.rodeo.types.IRelationship;
@@ -22,9 +22,9 @@ public interface IHookable {
 
     public boolean isNodeHook();
 
-    public void processNodes(ArrayList<INode> nodes);
+    public void processNodes(List<INode> nodes);
 
     public boolean isRelationshipHook();
 
-    public void processRelationships(ArrayList<IRelationship> rels);
+    public void processRelationships(List<IRelationship> rels);
 }
