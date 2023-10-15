@@ -30,7 +30,7 @@ configurations {
 }
 
 dependencies {
-    annotationProcessor 'com.github.spotbugs:spotbugs-annotations:4.7.3'
+    annotationProcessor 'com.github.spotbugs:spotbugs-annotations:4.8.0'
 
     if (project.hasProperty("rodeoBuild")) {
         api project(':core:types-lib')
