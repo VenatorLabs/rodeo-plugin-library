@@ -6,7 +6,7 @@ plugins {
     id 'java-library'
     id 'checkstyle'
     id 'com.github.spotbugs' version '6.0.8'
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "com.github.johnrengelman.shadow" version "8.+"
 }
 
 // current version of the project
@@ -30,7 +30,7 @@ configurations {
 }
 
 dependencies {
-    annotationProcessor 'com.github.spotbugs:spotbugs-annotations:4.7.3'
+    annotationProcessor 'com.github.spotbugs:spotbugs-annotations:4.+'
 
     if (project.hasProperty("rodeoBuild")) {
         api project(':core:types-lib')
